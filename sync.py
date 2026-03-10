@@ -44,8 +44,8 @@ DEFAULT_CONFIG = {
 
 HEADERS = {
     "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
-                  "AppleWebKit/537.36 (KHTML, like Gecko) "
-                  "Chrome/131.0.0.0 Safari/537.36"
+    "AppleWebKit/537.36 (KHTML, like Gecko) "
+    "Chrome/131.0.0.0 Safari/537.36"
 }
 
 
@@ -75,7 +75,9 @@ def load_config(config_path):
 
     return config
 
+
 # ─── Price Scraping: OpenAI ──────────────────────────────────────────────────
+
 
 def parse_price(text):
     """Extract a numeric dollar price from a string like '$2.50' or '-'."""
@@ -187,6 +189,7 @@ def scrape_openai_prices():
 
 # ─── Price Scraping: Anthropic ───────────────────────────────────────────────
 
+
 def scrape_anthropic_prices():
     """
     Scrape the Anthropic API pricing from their docs.
@@ -260,6 +263,7 @@ def scrape_anthropic_prices():
 
 # ─── Fallback: LiteLLM Pricing Data ─────────────────────────────────────────
 
+
 def fetch_litellm_prices():
     """
     Fetch pricing from LiteLLM's community-maintained pricing database.
@@ -294,6 +298,7 @@ def fetch_litellm_prices():
 
 
 # ─── Monitor API ─────────────────────────────────────────────────────────────
+
 
 def get_monitor_models(monitor_url, monitor_token):
     """Fetch all models currently configured in OpenWebUI Monitor."""
@@ -331,6 +336,7 @@ def update_monitor_prices(monitor_url, monitor_token, updates):
 
 
 # ─── Matching Logic ──────────────────────────────────────────────────────────
+
 
 def is_free_model(model_id, free_patterns):
     """Check if a model should be priced at 0 (local/free)."""
@@ -400,6 +406,7 @@ def find_price(model_id, openai_prices, anthropic_prices, litellm_prices, free_p
 
 # ─── Main ────────────────────────────────────────────────────────────────────
 
+
 def main():
     parser = argparse.ArgumentParser(
         description="Sync model prices to OpenWebUI Monitor from official API pricing pages."
@@ -458,7 +465,9 @@ def main():
 
     if not monitor_token:
         print("ERROR: No monitor token provided.")
-        print("Set monitor_token in config.json, MONITOR_TOKEN env var, or use --monitor-token flag.")
+        print(
+            "Set monitor_token in config.json, MONITOR_TOKEN env var, or use --monitor-token flag."
+        )
         sys.exit(1)
 
     if not monitor_url:
@@ -466,12 +475,12 @@ def main():
         print("Set monitor_url in config.json, MONITOR_URL env var, or use --monitor-url flag.")
         sys.exit(1)
 
-    print(f"{'='*60}")
-    print(f"OpenWebUI Monitor Price Sync")
+    print(f"{'=' * 60}")
+    print("OpenWebUI Monitor Price Sync")
     print(f"Monitor: {monitor_url}")
     print(f"Time:    {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
     print(f"Source:  {source}")
-    print(f"{'='*60}")
+    print(f"{'=' * 60}")
 
     # Step 1: Fetch pricing data from sources
     print("\n[1/4] Fetching pricing data...")
@@ -533,21 +542,31 @@ def main():
         output_diff = abs(current_output - new_output)
 
         if input_diff > threshold or output_diff > threshold:
-            updates.append({
-                "id": mid,
-                "input_price": new_input,
-                "output_price": new_output,
-                "per_msg_price": current_per_msg if current_per_msg != -1 else -1,
-            })
-            direction_in = "↑" if new_input > current_input else "↓" if new_input < current_input else "="
-            direction_out = "↑" if new_output > current_output else "↓" if new_output < current_output else "="
-            print(f"  UPDATE {mid}: "
-                  f"${current_input:.4f}→${new_input:.4f} {direction_in} / "
-                  f"${current_output:.4f}→${new_output:.4f} {direction_out}")
+            updates.append(
+                {
+                    "id": mid,
+                    "input_price": new_input,
+                    "output_price": new_output,
+                    "per_msg_price": current_per_msg if current_per_msg != -1 else -1,
+                }
+            )
+            direction_in = (
+                "↑" if new_input > current_input else "↓" if new_input < current_input else "="
+            )
+            direction_out = (
+                "↑" if new_output > current_output else "↓" if new_output < current_output else "="
+            )
+            print(
+                f"  UPDATE {mid}: "
+                f"${current_input:.4f}→${new_input:.4f} {direction_in} / "
+                f"${current_output:.4f}→${new_output:.4f} {direction_out}"
+            )
         else:
             unchanged.append(mid)
 
-    print(f"\n  Summary: {len(updates)} to update, {len(unchanged)} unchanged, {len(not_found)} not found")
+    print(
+        f"\n  Summary: {len(updates)} to update, {len(unchanged)} unchanged, {len(not_found)} not found"
+    )
 
     if not_found:
         print(f"  Models without pricing data: {', '.join(not_found[:10])}")
@@ -571,11 +590,10 @@ def main():
         else:
             print("  All prices are already up to date!")
 
-    print(f"\n{'='*60}")
+    print(f"\n{'=' * 60}")
     print("Done!")
-    print(f"{'='*60}")
+    print(f"{'=' * 60}")
 
 
 if __name__ == "__main__":
     main()
-
