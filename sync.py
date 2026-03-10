@@ -28,6 +28,8 @@ from datetime import datetime
 import requests
 from bs4 import BeautifulSoup
 
+__version__ = "1.0.0"
+
 # ─── Configuration ───────────────────────────────────────────────────────────
 
 DEFAULT_CONFIG = {
@@ -412,6 +414,11 @@ def main():
         description="Sync model prices to OpenWebUI Monitor from official API pricing pages."
     )
     parser.add_argument(
+        "--version",
+        action="version",
+        version=f"%(prog)s {__version__}",
+    )
+    parser.add_argument(
         "--config",
         default="config.json",
         help="Path to JSON config file (default: config.json).",
@@ -476,7 +483,7 @@ def main():
         sys.exit(1)
 
     print(f"{'=' * 60}")
-    print("OpenWebUI Monitor Price Sync")
+    print(f"OpenWebUI Monitor Price Sync v{__version__}")
     print(f"Monitor: {monitor_url}")
     print(f"Time:    {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
     print(f"Source:  {source}")
