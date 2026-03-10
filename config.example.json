@@ -1,0 +1,11 @@
+{
+    "monitor_url": "https://your-openwebui-monitor-instance.example.com",
+    "monitor_token": "your-access-token-here",
+    "source": "both",
+    "threshold": 0.001,
+    "free_model_patterns": [
+        ":latest",
+        "phi4-mini",
+        "sora-2"
+    ]
+}
